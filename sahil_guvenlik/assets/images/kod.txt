@@ -1,0 +1,2562 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'SG-CEP - Sahil Güvenlik Eğitim Platformu',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Roboto',
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Color.fromRGBO(255, 255, 255, 0.95),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        ),
+      ),
+      home: SplashScreen(),
+    );
+  }
+}
+
+// A. AÇILIŞ EKRANI
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _navigateToHome();
+  }
+
+  void _navigateToHome() {
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          // Arka plan resmi
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/UNSUR(1).jpeg'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          // Koyu overlay
+          Container(color: Colors.black.withOpacity(0.4)),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 15,
+                        offset: Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/images.png',
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.security,
+                          size: 60,
+                          color: Colors.orange.shade800,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 40),
+                Text(
+                  'SAHİL GÜVENLİK KOMUTANLIĞI',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 1.5,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 10,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 15),
+                Text(
+                  'SG-CEP UYGULAMASI',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 2.0,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 10,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 40),
+                CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Yükleniyor...',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 5,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 40,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                Text(
+                  'Directed by İbrahim Çabuk',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 1.0,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 5,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Directed by Tolga Kahraman',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white.withOpacity(0.9),
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 1.0,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 5,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ANA SAYFA
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool _showSearchResults = false;
+  List<Map<String, dynamic>> _searchResults = [];
+
+  final List<Map<String, dynamic>> _allMenuItems = [
+    {
+      'title': 'Yasal İşlem Tutanakları',
+      'icon': Icons.assignment,
+      'color': Colors.blue,
+      'page': YasalIslemTutanaklariPage(),
+    },
+    {
+      'title': 'Kontrol Listeleri',
+      'icon': Icons.assessment,
+      'color': Colors.orange,
+      'page': KontrolListeleriAnaPage(),
+    },
+    {
+      'title': 'Mevzuat',
+      'icon': Icons.gavel,
+      'color': Colors.purple,
+      'page': MevzuatPage(),
+    },
+    {
+      'title': 'Sıkça Yapılan Hatalar',
+      'icon': Icons.error_outline,
+      'color': Colors.red,
+      'page': SikcaYapilanHatalarPage(),
+    },
+    {
+      'title': 'Üye Girişi',
+      'icon': Icons.login,
+      'color': Colors.redAccent,
+      'action': 'login',
+    },
+    {
+      'title': 'Kayıt Ol',
+      'icon': Icons.person_add,
+      'color': Colors.green,
+      'action': 'register',
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _showSearchResults = query.isNotEmpty;
+      if (query.isNotEmpty) {
+        _searchResults = _allMenuItems.where((item) {
+          return item['title'].toLowerCase().contains(query);
+        }).toList();
+      } else {
+        _searchResults.clear();
+      }
+    });
+  }
+
+  void _onSearchItemTap(Map<String, dynamic> item) {
+    if (item['page'] != null) {
+      _navigateTo(context, item['page']);
+    } else if (item['action'] == 'login') {
+      _navigateToLogin(context);
+    } else if (item['action'] == 'register') {
+      _navigateToRegister(context);
+    }
+
+    setState(() {
+      _showSearchResults = false;
+      _searchController.clear();
+      _searchFocusNode.unfocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'SG-CEP Ana Sayfa',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        actions: _buildAppBarActions(context),
+        elevation: 4,
+        backgroundColor: Colors.orange.shade800,
+      ),
+      body: _buildBody(context),
+    );
+  }
+
+  List<Widget> _buildAppBarActions(BuildContext context) {
+    return [
+      _buildAppBarButton('Giriş', Icons.login, Colors.white, () {
+        _navigateToLogin(context);
+      }),
+      SizedBox(width: 8),
+      _buildAppBarButton('Kayıt', Icons.person_add, Colors.white, () {
+        _navigateToRegister(context);
+      }),
+    ];
+  }
+
+  Widget _buildAppBarButton(
+    String text,
+    IconData icon,
+    Color color,
+    VoidCallback onPressed,
+  ) {
+    return TextButton.icon(
+      icon: Icon(icon, color: color, size: 18),
+      label: Text(text, style: TextStyle(color: color, fontSize: 12)),
+      onPressed: onPressed,
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return Stack(
+      children: [
+        Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.orange.shade800, Colors.orange.shade600],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Column(children: [_buildHeader(), _buildSearchField()]),
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/resim1.jpg'),
+                    fit: BoxFit.cover,
+                    opacity: 0.7,
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildGridButtons(context),
+                      SizedBox(height: 40),
+                      _buildBottomSection(),
+                      SizedBox(height: 30),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (_showSearchResults && _searchResults.isNotEmpty)
+          Positioned(
+            top: 200,
+            left: 16,
+            right: 16,
+            child: _buildSearchResults(),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildHeader() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildLogo(),
+              SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'SG-CEP\nSAHİL GÜVENLİK EĞİTİM PLATFORMU',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.3,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black87,
+                        blurRadius: 10,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(width: 12),
+              _buildLogo(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLogo() {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 2)),
+        ],
+      ),
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/images.png',
+          width: 50,
+          height: 50,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Icon(Icons.security, size: 24, color: Colors.orange);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+      child: TextField(
+        controller: _searchController,
+        focusNode: _searchFocusNode,
+        decoration: InputDecoration(
+          hintText: 'Menüde ara...',
+          prefixIcon: Icon(Icons.search, color: Colors.orange.shade800),
+          hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.9),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchResults() {
+    return Material(
+      elevation: 8,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        constraints: BoxConstraints(maxHeight: 250),
+        child: ListView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(8),
+          itemCount: _searchResults.length,
+          itemBuilder: (context, index) {
+            final item = _searchResults[index];
+            return ListTile(
+              leading: Icon(item['icon'], color: item['color'], size: 20),
+              title: Text(item['title'], style: TextStyle(fontSize: 14)),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                size: 14,
+                color: Colors.grey,
+              ),
+              onTap: () => _onSearchItemTap(item),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGridButtons(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: GridView.count(
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 1.1,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          _buildGridItem(
+            'Yasal İşlem\nTutanakları',
+            Icons.assignment,
+            Colors.blue,
+            () => _navigateTo(context, YasalIslemTutanaklariPage()),
+          ),
+          _buildGridItem(
+            'Kontrol\nListeleri',
+            Icons.assessment,
+            Colors.orange,
+            () => _navigateTo(context, KontrolListeleriAnaPage()),
+          ),
+          _buildGridItem(
+            'Mevzuat',
+            Icons.gavel,
+            Colors.purple,
+            () => _navigateTo(context, MevzuatPage()),
+          ),
+          _buildGridItem(
+            'Sıkça Yapılan\nHatalar',
+            Icons.error_outline,
+            Colors.red,
+            () => _navigateTo(context, SikcaYapilanHatalarPage()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGridItem(
+    String title,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return Card(
+      elevation: 4,
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Color.fromRGBO(255, 255, 255, 0.4),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.7),
+              width: 1.5,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 28, color: color),
+              ),
+              SizedBox(height: 8),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: color,
+                    height: 1.2,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomSection() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          // Resmi Gazete ve Mevzuat Butonları - Alt alta
+          Row(
+            children: [
+              Expanded(
+                child: _buildLinkButton(
+                  'Resmi Gazete',
+                  Icons.article,
+                  Colors.red,
+                  () => _launchUrl('https://www.resmigazete.gov.tr'),
+                ),
+              ),
+              SizedBox(width: 16),
+              SizedBox(height: 16),
+              Expanded(
+                child: _buildLinkButton(
+                  'Mevzuat Gov.tr',
+                  Icons.library_books,
+                  Colors.blue,
+                  () => _launchUrl('https://www.mevzuat.gov.tr'),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLinkButton(
+    String text,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            height: 100,
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(255, 255, 255, 0.5),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.8),
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, size: 28, color: color),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.2,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black87,
+                        blurRadius: 4,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _navigateTo(BuildContext context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
+
+  void _navigateToLogin(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
+  void _navigateToRegister(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RegisterPage()),
+    );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Link açılamadı: $url')));
+      }
+    }
+  }
+}
+
+// B. YASAL İŞLEM TUTANAKLARI EKRANI
+class YasalIslemTutanaklariPage extends StatelessWidget {
+  final List<Map<String, dynamic>> tutanaklar = [
+    {
+      'title': 'Arama Kararı Tutanağı',
+      'icon': Icons.search,
+      'color': Colors.blue,
+      'videoUrl': 'https://example.com/arama_karari.mp4',
+      'imageUrl': 'assets/tutanaklar/arama_karari.jpg',
+    },
+    {
+      'title': 'Arama Tutanağı',
+      'icon': Icons.find_in_page,
+      'color': Colors.blue.shade700,
+      'videoUrl': 'https://example.com/arama_tutanagi.mp4',
+      'imageUrl': 'assets/tutanaklar/arama_tutanagi.jpg',
+    },
+    {
+      'title': 'Bilgi Alma Tutanağı',
+      'icon': Icons.info,
+      'color': Colors.green,
+      'videoUrl': 'https://example.com/bilgi_alma.mp4',
+      'imageUrl': 'assets/tutanaklar/bilgi_alma.jpg',
+    },
+    {
+      'title': 'Genel Amaçlı Zapt (Elkoyma) Tutanağı',
+      'icon': Icons.security,
+      'color': Colors.orange,
+      'videoUrl': 'https://example.com/elkoyma.mp4',
+      'imageUrl': 'assets/tutanaklar/elkoyma.jpg',
+    },
+    {
+      'title': 'Elkoyma ve Sevk Tutanağı (Gerçek Kişi)',
+      'icon': Icons.person,
+      'color': Colors.orange.shade700,
+      'videoUrl': 'https://example.com/elkoyma_gercek.mp4',
+      'imageUrl': 'assets/tutanaklar/elkoyma_gercek.jpg',
+    },
+    {
+      'title': 'Elkoyma ve Sevk Tutanağı (Tüzel Kişi)',
+      'icon': Icons.business,
+      'color': Colors.orange.shade800,
+      'videoUrl': 'https://example.com/elkoyma_tuzel.mp4',
+      'imageUrl': 'assets/tutanaklar/elkoyma_tuzel.jpg',
+    },
+    {
+      'title': 'Fezleke',
+      'icon': Icons.description,
+      'color': Colors.purple,
+      'videoUrl': 'https://example.com/fezleke.mp4',
+      'imageUrl': 'assets/tutanaklar/fezleke.jpg',
+    },
+    {
+      'title': 'Gemi İdari Yaptırım Karar Tutanağı (Çevre)',
+      'icon': Icons.directions_boat,
+      'color': Colors.teal,
+      'videoUrl': 'https://example.com/gemi_cevre.mp4',
+      'imageUrl': 'assets/tutanaklar/gemi_cevre.jpg',
+    },
+    {
+      'title': 'Genel Amaçlı Yediemine Teslim Tutanağı',
+      'icon': Icons.handshake,
+      'color': Colors.brown,
+      'videoUrl': 'https://example.com/yediemin.mp4',
+      'imageUrl': 'assets/tutanaklar/yediemin.jpg',
+    },
+    {
+      'title': 'İdari Para Cezası Kararı (Su Ürünleri)',
+      'icon': Icons.money_off,
+      'color': Colors.red,
+      'videoUrl': 'https://example.com/para_cezasi.mp4',
+      'imageUrl': 'assets/tutanaklar/para_cezasi.jpg',
+    },
+    {
+      'title': 'İdari Yaptırım Karar Tutanağı',
+      'icon': Icons.gavel,
+      'color': Colors.red.shade700,
+      'videoUrl': 'https://example.com/idari_yaptirim.mp4',
+      'imageUrl': 'assets/tutanaklar/idari_yaptirim.jpg',
+    },
+    {
+      'title': 'Mağdur/Müşteki İfade Tutanağı',
+      'icon': Icons.record_voice_over,
+      'color': Colors.pink,
+      'videoUrl': 'https://example.com/magdur_ifade.mp4',
+      'imageUrl': 'assets/tutanaklar/magdur_ifade.jpg',
+    },
+    {
+      'title': 'Numune Tutanağı (Çevre)',
+      'icon': Icons.science,
+      'color': Colors.green.shade700,
+      'videoUrl': 'https://example.com/numune.mp4',
+      'imageUrl': 'assets/tutanaklar/numune.jpg',
+    },
+    {
+      'title': 'Olay Tespit Tutanağı',
+      'icon': Icons.warning,
+      'color': Colors.amber,
+      'videoUrl': 'https://example.com/olay_tespit.mp4',
+      'imageUrl': 'assets/tutanaklar/olay_tespit.jpg',
+    },
+    {
+      'title': 'Sanık Karar Takip Formu',
+      'icon': Icons.track_changes,
+      'color': Colors.deepOrange,
+      'videoUrl': 'https://example.com/sanik_takip.mp4',
+      'imageUrl': 'assets/tutanaklar/sanik_takip.jpg',
+    },
+    {
+      'title': 'Savcılık Görüşme Tutanağı',
+      'icon': Icons.people,
+      'color': Colors.purple.shade700,
+      'videoUrl': 'https://example.com/savcilik.mp4',
+      'imageUrl': 'assets/tutanaklar/savcilik.jpg',
+    },
+    {
+      'title': 'Sevk Serbest Bırakma Tutanağı',
+      'icon': Icons.exit_to_app,
+      'color': Colors.green.shade800,
+      'videoUrl': 'https://example.com/sevk_serbest.mp4',
+      'imageUrl': 'assets/tutanaklar/sevk_serbest.jpg',
+    },
+    {
+      'title': 'Su Ürünleri Kanununa Aykırılıklara İlişkin Tespit Tutanağı',
+      'icon': Icons.water_damage,
+      'color': Colors.blue.shade900,
+      'videoUrl': 'https://example.com/su_urunleri_tespit.mp4',
+      'imageUrl': 'assets/tutanaklar/su_urunleri_tespit.jpg',
+    },
+    {
+      'title': 'Şüpheli İfade Tutanağı (Müdafi Talep Edildiğinde)',
+      'icon': Icons.person_pin,
+      'color': Colors.red.shade900,
+      'videoUrl': 'https://example.com/supheli_mudafi.mp4',
+      'imageUrl': 'assets/tutanaklar/supheli_mudafi.jpg',
+    },
+    {
+      'title': 'Şüpheli İfade Tutanağı (Müdafi Talep Edilmediğinde)',
+      'icon': Icons.person_outline,
+      'color': Colors.red.shade800,
+      'videoUrl': 'https://example.com/supheli_mudafisiz.mp4',
+      'imageUrl': 'assets/tutanaklar/supheli_mudafisiz.jpg',
+    },
+    {
+      'title': 'Tespit Tutanağı (Çevre)',
+      'icon': Icons.eco,
+      'color': Colors.lightGreen,
+      'videoUrl': 'https://example.com/tespit_cevre.mp4',
+      'imageUrl': 'assets/tutanaklar/tespit_cevre.jpg',
+    },
+    {
+      'title': 'Teşhis Tutanağı',
+      'icon': Icons.visibility,
+      'color': Colors.cyan,
+      'videoUrl': 'https://example.com/teshis.mp4',
+      'imageUrl': 'assets/tutanaklar/teshis.jpg',
+    },
+    {
+      'title': 'Tutanak ve Tebligat (Su Ürünleri)',
+      'icon': Icons.notifications,
+      'color': Colors.blueGrey,
+      'videoUrl': 'https://example.com/tebligat.mp4',
+      'imageUrl': 'assets/tutanaklar/tebligat.jpg',
+    },
+    {
+      'title': 'Üst Arama Tutanağı',
+      'icon': Icons.person_search,
+      'color': Colors.deepPurple,
+      'videoUrl': 'https://example.com/ust_arama.mp4',
+      'imageUrl': 'assets/tutanaklar/ust_arama.jpg',
+    },
+    {
+      'title': 'Yakalama ve Gözaltına Alma Tutanağı',
+      'icon': Icons.lock,
+      'color': Colors.red.shade600,
+      'videoUrl': 'https://example.com/yakalama.mp4',
+      'imageUrl': 'assets/tutanaklar/yakalama.jpg',
+    },
+    {
+      'title': 'Şüpheli ve Sanık Hakları Formu',
+      'icon': Icons.article,
+      'color': Colors.indigo,
+      'videoUrl': 'https://example.com/haklar_formu.mp4',
+      'imageUrl': 'assets/tutanaklar/haklar_formu.jpg',
+    },
+    {
+      'title': 'Zaptetme (Elkoyma) Tutanağı (Su Ürünleri)',
+      'icon': Icons.beach_access,
+      'color': Colors.lightBlue,
+      'videoUrl': 'https://example.com/zaptetme_su_urunleri.mp4',
+      'imageUrl': 'assets/tutanaklar/zaptetme_su_urunleri.jpg',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Yasal İşlem Tutanakları', style: TextStyle(fontSize: 18)),
+        backgroundColor: Colors.blue.shade800,
+        elevation: 4,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(9).jpg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: tutanaklar.length,
+          itemBuilder: (context, index) {
+            final tutanak = tutanaklar[index];
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: ListTile(
+                leading: Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: tutanak['color'].withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    tutanak['icon'],
+                    color: tutanak['color'],
+                    size: 22,
+                  ),
+                ),
+                title: Text(
+                  tutanak['title'],
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(
+                  'Video ve örnek tutanak görüntüleri',
+                  style: TextStyle(fontSize: 12),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.ondemand_video,
+                        color: Colors.blue,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        _showVideoDialog(
+                          context,
+                          tutanak['title'],
+                          tutanak['videoUrl'],
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.image, color: Colors.green, size: 20),
+                      onPressed: () {
+                        _showImageDialog(
+                          context,
+                          tutanak['title'],
+                          tutanak['imageUrl'],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  _showTutanakOptions(context, tutanak);
+                },
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showVideoDialog(BuildContext context, String title, String videoUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('$title - Video Eğitimi', style: TextStyle(fontSize: 16)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.ondemand_video, size: 50, color: Colors.blue),
+            SizedBox(height: 12),
+            Text(
+              'Video eğitim içeriği yükleniyor...',
+              style: TextStyle(fontSize: 14),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 12),
+            LinearProgressIndicator(),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Kapat', style: TextStyle(fontSize: 14)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showImageDialog(BuildContext context, String title, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('$title - Örnek Tutanak', style: TextStyle(fontSize: 16)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 150,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Icon(
+                Icons.description,
+                size: 50,
+                color: Colors.grey.shade400,
+              ),
+            ),
+            SizedBox(height: 12),
+            Text('Örnek tutanak görüntüsü', style: TextStyle(fontSize: 14)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Kapat', style: TextStyle(fontSize: 14)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showTutanakOptions(BuildContext context, Map<String, dynamic> tutanak) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              tutanak['title'],
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 12),
+            ListTile(
+              leading: Icon(Icons.ondemand_video, color: Colors.blue, size: 22),
+              title: Text('Video Eğitimi İzle', style: TextStyle(fontSize: 14)),
+              onTap: () {
+                Navigator.pop(context);
+                _showVideoDialog(
+                  context,
+                  tutanak['title'],
+                  tutanak['videoUrl'],
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.image, color: Colors.green, size: 22),
+              title: Text(
+                'Örnek Tutanak Görüntüsü',
+                style: TextStyle(fontSize: 14),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _showImageDialog(
+                  context,
+                  tutanak['title'],
+                  tutanak['imageUrl'],
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.download, color: Colors.purple, size: 22),
+              title: Text(
+                'PDF Formatında İndir',
+                style: TextStyle(fontSize: 14),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${tutanak['title']} indiriliyor...'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// C. KONTROL LİSTELERİ ANA EKRANI
+class KontrolListeleriAnaPage extends StatelessWidget {
+  final List<Map<String, dynamic>> anaKategoriler = [
+    {
+      'title': 'Ticari Gemiler Kontrol Listeleri',
+      'icon': Icons.directions_boat,
+      'color': Colors.blue,
+      'page': TicariGemilerKontrolPage(),
+    },
+    {
+      'title': 'Özel Tekne Kontrol Listesi',
+      'icon': Icons.sailing,
+      'color': Colors.green,
+      'page': OzelTekneKontrolPage(),
+    },
+    {
+      'title': 'Su Ürünleri Avcılığı Kontrolleri',
+      'icon': Icons.water,
+      'color': Colors.teal,
+      'page': SuUrunleriAvciligiKontrolPage(),
+    },
+    {
+      'title': 'Dalış Faaliyetleri Kontrolleri',
+      'icon': Icons.scuba_diving,
+      'color': Colors.purple,
+      'page': DalisFaliyetleriKontrolPage(),
+    },
+    {
+      'title': 'Su Sporları İşletmeleri Kontrolleri',
+      'icon': Icons.surfing,
+      'color': Colors.orange,
+      'page': SuSporlariIsletmeleriKontrolPage(),
+    },
+    {
+      'title': 'Balık Çiftlikleri Kontrolleri',
+      'icon': Icons.agriculture,
+      'color': Colors.brown,
+      'page': BalikCiftlikleriKontrolPage(),
+    },
+    {
+      'title': 'Çevre Kanunu Kontrol Listesi',
+      'icon': Icons.eco,
+      'color': Colors.lightGreen,
+      'page': CevreKanunuKontrolPage(),
+    },
+    {
+      'title': 'Kaçakçılıkla Mücadele Kontrolleri',
+      'icon': Icons.security,
+      'color': Colors.red,
+      'page': KacakciliklaMucadeleKontrolPage(),
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Kontrol Listeleri', style: TextStyle(fontSize: 18)),
+        backgroundColor: Colors.orange.shade800,
+        elevation: 4,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(14).jpg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: anaKategoriler.length,
+          itemBuilder: (context, index) {
+            final kategori = anaKategoriler[index];
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: ListTile(
+                leading: Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: kategori['color'].withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    kategori['icon'],
+                    color: kategori['color'],
+                    size: 22,
+                  ),
+                ),
+                title: Text(
+                  kategori['title'],
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  _navigateToKategori(context, kategori);
+                },
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _navigateToKategori(
+    BuildContext context,
+    Map<String, dynamic> kategori,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => kategori['page']),
+    );
+  }
+}
+
+// KONTROL LİSTESİ ALT SAYFALARI
+
+class TicariGemilerKontrolPage extends StatelessWidget {
+  final List<String> kontrolMaddeleri = [
+    '1. Gemi Genel Kontrol Listesi',
+    '2. Güvenlik Ekipmanları Kontrol Listesi',
+    '3. Seyir Dokümanları Kontrol Listesi',
+    '4. İzin ve Lisanslar Kontrolü',
+    '5. Mürettebat Evrakları Kontrolü',
+    '6. Çevre Uygunluk Kontrolü',
+    '7. Yangın Güvenlik Ekipmanları',
+    '8. Can Kurtarma Ekipmanları',
+    '9. Navigasyon Ekipmanları',
+    '10. Haberleşme Ekipmanları',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Ticari Gemiler Kontrol Listeleri',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.blue.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(25).jpg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: kontrolMaddeleri.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: CheckboxListTile(
+                title: Text(
+                  kontrolMaddeleri[index],
+                  style: TextStyle(fontSize: 14),
+                ),
+                value: false,
+                onChanged: (bool? value) {},
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class OzelTekneKontrolPage extends StatelessWidget {
+  final List<String> kontrolMaddeleri = [
+    '1. Özel Tekne Genel Kontrol',
+    '2. Güvenlik Ekipmanları',
+    '3. Seyir Evrakları Kontrolü',
+    '4. Tekne Ruhsat ve Belgeleri',
+    '5. Kasko ve Sigorta Kontrolü',
+    '6. Motor ve Tekne Bakım Kontrolü',
+    '7. Can Yeleği ve Can Simidi Kontrolü',
+    '8. Yangın Söndürücü Kontrolü',
+    '9. İlk Yardım Çantası Kontrolü',
+    '10. Navigasyon Işıkları Kontrolü',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Özel Tekne Kontrol Listesi',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.green.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(26).jpeg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: kontrolMaddeleri.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: CheckboxListTile(
+                title: Text(
+                  kontrolMaddeleri[index],
+                  style: TextStyle(fontSize: 14),
+                ),
+                value: false,
+                onChanged: (bool? value) {},
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SuUrunleriAvciligiKontrolPage extends StatelessWidget {
+  final List<String> kontrolMaddeleri = [
+    '1. Trol Yöntemi Kontrol Listesi',
+    '2. Gırgır Yöntemi Kontrol Listesi',
+    '3. Algarna Yöntemi Kontrol Listesi',
+    '4. Parakete Yöntemi Kontrol Listesi',
+    '5. Uzatma Ağları Kontrol Listesi',
+    '6. Avlanma İzin Belgesi Kontrolü',
+    '7. Balıkçı Teknesi Ruhsatı',
+    '8. Avlanma Kotası Kontrolü',
+    '9. Boy Yasağı Kontrolü',
+    '10. Mevsimsel Yasak Kontrolü',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Su Ürünleri Avcılığı Kontrolleri',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.teal.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(28).jpeg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: kontrolMaddeleri.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: CheckboxListTile(
+                title: Text(
+                  kontrolMaddeleri[index],
+                  style: TextStyle(fontSize: 14),
+                ),
+                value: false,
+                onChanged: (bool? value) {},
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class DalisFaliyetleriKontrolPage extends StatelessWidget {
+  final List<String> kontrolMaddeleri = [
+    '1. Ticari Dalış İşletmeleri Kontrol Listesi',
+    '2. Amatör Dalış Faaliyetleri Kontrol Listesi',
+    '3. Dalış Ekipmanları Kontrol Listesi',
+    '4. Dalış İzin Belgesi Kontrolü',
+    '5. Dalış Eğitmen Sertifikası',
+    '6. Dalış Planı ve Güvenlik Önlemleri',
+    '7. Dalış Tüpü ve Regülatör Kontrolü',
+    '8. Dalış Bilgisayarı ve Derinlik Ölçer',
+    '9. Acil Durum Ekipmanları',
+    '10. Dalış Bölgesi Güvenlik Kontrolü',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Dalış Faaliyetleri Kontrolleri',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.purple.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(33).jpeg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: kontrolMaddeleri.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: CheckboxListTile(
+                title: Text(
+                  kontrolMaddeleri[index],
+                  style: TextStyle(fontSize: 14),
+                ),
+                value: false,
+                onChanged: (bool? value) {},
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SuSporlariIsletmeleriKontrolPage extends StatelessWidget {
+  final List<String> kontrolMaddeleri = [
+    '1. Su Kayağı İşletmeleri Kontrol Listesi',
+    '2. Jet Ski İşletmeleri Kontrol Listesi',
+    '3. Yat İşletmeleri Kontrol Listesi',
+    '4. İşletme Ruhsatı ve İzinleri',
+    '5. Ekipman Bakım ve Kontrol Kayıtları',
+    '6. Personel Sertifikaları',
+    '7. Güvenlik Talimatları ve Eğitim',
+    '8. Acil Durum Planları',
+    '9. Müşteri Güvenlik Donanımları',
+    '10. Çevresel Etki Değerlendirmesi',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Su Sporları İşletmeleri Kontrolleri',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.orange.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(29).jpeg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: kontrolMaddeleri.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: CheckboxListTile(
+                title: Text(
+                  kontrolMaddeleri[index],
+                  style: TextStyle(fontSize: 14),
+                ),
+                value: false,
+                onChanged: (bool? value) {},
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class BalikCiftlikleriKontrolPage extends StatelessWidget {
+  final List<String> kontrolMaddeleri = [
+    '1. Balık Çiftliği Genel Kontrol Listesi',
+    '2. Çevresel Etki Kontrol Listesi',
+    '3. Üretim ve İşletme Kontrol Listesi',
+    '4. Su Kalitesi Kontrolü',
+    '5. Yem ve Besleme Kontrolü',
+    '6. Hastalık Kontrol ve Önlemleri',
+    '7. Atık Yönetim Sistemi',
+    '8. İş Sağlığı ve Güvenliği',
+    '9. Kayıt ve İzlenebilirlik Sistemi',
+    '10. Çevre İzin ve Lisansları',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Balık Çiftlikleri Kontrolleri',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.brown.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(30).jpeg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: kontrolMaddeleri.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: CheckboxListTile(
+                title: Text(
+                  kontrolMaddeleri[index],
+                  style: TextStyle(fontSize: 14),
+                ),
+                value: false,
+                onChanged: (bool? value) {},
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class CevreKanunuKontrolPage extends StatelessWidget {
+  final List<String> kontrolMaddeleri = [
+    '1. Çevre Mevzuatı Uyum Kontrol Listesi',
+    '2. Atık Yönetimi Kontrol Listesi',
+    '3. Kirlilik Önleme Kontrol Listesi',
+    '4. Atık Kabul Tesisleri Kontrolü',
+    '5. Sintine ve Atık Yağ Kontrolü',
+    '6. Atık Su Arıtma Sistemi',
+    '7. Hava Kirliliği Kontrolü',
+    '8. Gürültü Kirliliği Kontrolü',
+    '9. Tehlikeli Madde Depolama',
+    '10. Çevresel Acil Durum Planı',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Çevre Kanunu Kontrol Listesi',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.lightGreen.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(31).jpeg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: kontrolMaddeleri.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: CheckboxListTile(
+                title: Text(
+                  kontrolMaddeleri[index],
+                  style: TextStyle(fontSize: 14),
+                ),
+                value: false,
+                onChanged: (bool? value) {},
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class KacakciliklaMucadeleKontrolPage extends StatelessWidget {
+  final List<String> kontrolMaddeleri = [
+    '1. Gemi Kaçakçılık Kontrol Listesi',
+    '2. Kara Bağlantılı Kaçakçılık Kontrol Listesi',
+    '3. Önleyici Kontrol Listesi',
+    '4. Gemi Kayıt ve Kimlik Kontrolü',
+    '5. Yük ve Manifesto Kontrolü',
+    '6. Mürettebat ve Yolcu Listeleri',
+    '7. Gümrük Beyannameleri',
+    '8. Elektronik Takip Sistemleri',
+    '9. Şüpheli Faaliyet İzleme',
+    '10. İşbirliği Protokolleri Kontrolü',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Kaçakçılıkla Mücadele Kontrolleri',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.red.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(32).jpeg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: kontrolMaddeleri.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: CheckboxListTile(
+                title: Text(
+                  kontrolMaddeleri[index],
+                  style: TextStyle(fontSize: 14),
+                ),
+                value: false,
+                onChanged: (bool? value) {},
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+// D. MEVZUAT EKRANI
+class MevzuatPage extends StatelessWidget {
+  final List<Map<String, dynamic>> mevzuatListesi = [
+    {
+      'title': 'Türk Ceza Kanunu',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5237',
+    },
+    {
+      'title': 'Ceza Muhakemesi Kanunu',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5271',
+    },
+    {
+      'title': 'Kabahatler Kanunu',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5326',
+    },
+    {
+      'title': 'Sahil Güvenlik Kanunu',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2692',
+    },
+    {
+      'title': 'Deniz Çevresinin Korunması Kanunu',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5312',
+    },
+    {
+      'title': 'Su Ürünleri Kanunu',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=1380',
+    },
+    {
+      'title': 'Gemi Adamları Kanunu',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=854',
+    },
+    {
+      'title': 'Türk Bayrağı Kanunu',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2893',
+    },
+    {
+      'title': 'Sahil Güvenlik Yönetmeliği',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=20230',
+    },
+    {
+      'title': 'Deniz Çevresi Koruma Yönetmeliği',
+      'url': 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=20283',
+    },
+  ];
+
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mevzuat', style: TextStyle(fontSize: 18)),
+        backgroundColor: Colors.purple.shade800,
+        elevation: 4,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(16).jpg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: mevzuatListesi.length,
+          itemBuilder: (context, index) {
+            final mevzuat = mevzuatListesi[index];
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: ListTile(
+                leading: Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.purple.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.gavel, color: Colors.purple, size: 22),
+                ),
+                title: Text(
+                  mevzuat['title'],
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                trailing: Icon(Icons.open_in_new, color: Colors.blue, size: 18),
+                onTap: () => _launchUrl(mevzuat['url']),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+// E. SIKÇA YAPILAN HATALAR EKRANI
+class SikcaYapilanHatalarPage extends StatelessWidget {
+  final List<Map<String, dynamic>> hatalar = [
+    {
+      'title': 'Eksik Kimlik Bilgileri',
+      'description':
+          'Tutanaklarda kimlik bilgilerinin eksik veya yanlış doldurulması',
+      'cozum':
+          'TCKN, adres ve iletişim bilgileri dikkatlice kontrol edilmelidir.',
+      'onem': 'Yüksek',
+    },
+    {
+      'title': 'Zaman ve Tarih Hataları',
+      'description': 'Tutanaklarda zaman ve tarih bilgilerinin tutarsız olması',
+      'cozum': 'Tutanak başlangıç ve bitiş saatleri tutarlı olmalıdır.',
+      'onem': 'Orta',
+    },
+    {
+      'title': 'Mevzuat Maddelerinin Eksikliği',
+      'description':
+          'İşlemin dayanağı olan mevzuat maddelerinin belirtilmemesi',
+      'cozum':
+          'Her işlem için ilgili kanun ve madde numaraları belirtilmelidir.',
+      'onem': 'Yüksek',
+    },
+    {
+      'title': 'İmza Eksiklikleri',
+      'description': 'Tutanaklarda gerekli imzaların atılmaması',
+      'cozum': 'Tüm ilgili tarafların imzaları mutlaka alınmalıdır.',
+      'onem': 'Kritik',
+    },
+    {
+      'title': 'Delil Zinciri İhlali',
+      'description': 'El konulan eşyalarda delil zincirinin bozulması',
+      'cozum':
+          'El konulan her eşya için ayrı tutanak düzenlenmeli ve zincir korunmalıdır.',
+      'onem': 'Kritik',
+    },
+    {
+      'title': 'Hakların Hatırlatılmaması',
+      'description': 'Şüphelilere haklarının hatırlatılmaması',
+      'cozum':
+          'Her şüpheliye hakları yazılı ve sözlü olarak hatırlatılmalıdır.',
+      'onem': 'Yüksek',
+    },
+  ];
+
+  Color _getOnemRengi(String onem) {
+    switch (onem) {
+      case 'Kritik':
+        return Colors.red;
+      case 'Yüksek':
+        return Colors.orange;
+      case 'Orta':
+        return Colors.yellow.shade700;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sıkça Yapılan Hatalar', style: TextStyle(fontSize: 18)),
+        backgroundColor: Colors.red.shade800,
+        elevation: 4,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/UNSUR(20).jpg'),
+            fit: BoxFit.fill,
+            opacity: 0.8,
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: hatalar.length,
+          itemBuilder: (context, index) {
+            final hata = hatalar[index];
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              // ŞEFFAF ARKA PLAN
+              color: Colors.white.withOpacity(0.7),
+              child: ExpansionTile(
+                leading: Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: _getOnemRengi(hata['onem']).withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.error_outline,
+                    color: _getOnemRengi(hata['onem']),
+                    size: 22,
+                  ),
+                ),
+                title: Text(
+                  hata['title'],
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                subtitle: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: _getOnemRengi(hata['onem']).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: _getOnemRengi(hata['onem'])),
+                      ),
+                      child: Text(
+                        hata['onem'],
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: _getOnemRengi(hata['onem']),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hata:',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          hata['description'],
+                          style: TextStyle(fontSize: 13),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Çözüm:',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(hata['cozum'], style: TextStyle(fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+// GİRİŞ ve KAYIT SAYFALARI
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _rememberMe = false;
+  bool _obscurePassword = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Üye Girişi', style: TextStyle(fontSize: 18)),
+        backgroundColor: Colors.orange.shade800,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.orange.shade50, Colors.amber.shade50],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(20),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(24),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade100,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.security,
+                          size: 35,
+                          color: Colors.orange.shade800,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Giriş Yap',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange.shade800,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Hesabınıza erişmek için giriş yapın',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 24),
+                      TextFormField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          labelText: 'Kullanıcı Adı',
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Lütfen kullanıcı adınızı giriniz'
+                            : null,
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          labelText: 'Şifre',
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              size: 20,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty)
+                            return 'Lütfen şifrenizi giriniz';
+                          if (value.length < 6)
+                            return 'Şifre en az 6 karakter olmalıdır';
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _rememberMe,
+                                onChanged: (value) =>
+                                    setState(() => _rememberMe = value!),
+                              ),
+                              Text(
+                                'Beni Hatırla',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Şifre sıfırlama linki gönderildi',
+                                  ),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Şifremi Unuttum',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Giriş başarılı! Hoş geldiniz ${_usernameController.text}',
+                                  ),
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                              Future.delayed(
+                                Duration(seconds: 2),
+                                () => Navigator.pop(context),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange.shade800,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'Giriş Yap',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Hesabınız yok mu?',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          SizedBox(width: 8),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RegisterPage(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Kayıt Olun',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orange.shade800,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+}
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+  bool _acceptTerms = false;
+
+  void _register() {
+    if (_formKey.currentState!.validate()) {
+      if (!_acceptTerms) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lütfen kullanım koşullarını kabul edin'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Kayıt başarılı! Hoş geldiniz ${_usernameController.text}',
+          ),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      Future.delayed(Duration(seconds: 2), () => Navigator.pop(context));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Kayıt Ol', style: TextStyle(fontSize: 18)),
+        backgroundColor: Colors.green.shade700,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.orange.shade50, Colors.amber.shade50],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(20),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(24),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade100,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.person_add,
+                          size: 35,
+                          color: Colors.green.shade800,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Kayıt Ol',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade800,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Yeni bir hesap oluşturun',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 24),
+                      TextFormField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          labelText: 'Kullanıcı Adı',
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty)
+                            return 'Lütfen kullanıcı adınızı giriniz';
+                          if (value.length < 3)
+                            return 'Kullanıcı adı en az 3 karakter olmalıdır';
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'E-posta',
+                          prefixIcon: Icon(Icons.email),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty)
+                            return 'Lütfen e-posta adresinizi giriniz';
+                          if (!value.contains('@'))
+                            return 'Geçerli bir e-posta adresi giriniz';
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          labelText: 'Şifre',
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              size: 20,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty)
+                            return 'Lütfen şifrenizi giriniz';
+                          if (value.length < 6)
+                            return 'Şifre en az 6 karakter olmalıdır';
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: _obscureConfirmPassword,
+                        decoration: InputDecoration(
+                          labelText: 'Şifre Tekrar',
+                          prefixIcon: Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureConfirmPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              size: 20,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscureConfirmPassword =
+                                  !_obscureConfirmPassword,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty)
+                            return 'Lütfen şifrenizi tekrar giriniz';
+                          if (value != _passwordController.text)
+                            return 'Şifreler eşleşmiyor';
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _acceptTerms,
+                            onChanged: (value) =>
+                                setState(() => _acceptTerms = value!),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Kullanım koşullarını ve gizlilik politikasını kabul ediyorum',
+                              style: TextStyle(fontSize: 12),
+                              maxLines: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: _register,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green.shade700,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'Kayıt Ol',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Zaten hesabınız var mı?',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          SizedBox(width: 8),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginPage(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Giriş Yapın',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green.shade700,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+}

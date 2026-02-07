@@ -1,0 +1,6 @@
+flutter/ephemeral
+# videos
+*.mp4
+*.mov
+*.avi
+assets/videos/

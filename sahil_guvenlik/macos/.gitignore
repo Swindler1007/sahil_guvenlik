@@ -1,0 +1,25 @@
+# Flutter-related
+**/Flutter/ephemeral/
+**/Pods/
+
+# Xcode-related
+**/dgph
+**/xcuserdata/
+
+# Flutter
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Video & media
+*.mp4
+*.mov
+*.avi
+web/videos/
+assets/videos/
+
+# APK
+*.apk
+*.aab
+
