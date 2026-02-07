@@ -4,3 +4,22 @@ flutter/ephemeral
 *.mov
 *.avi
 assets/videos/
+
+# Flutter build
+build/
+.dart_tool/
+
+# web build
+build/web/
+
+# media
+*.mp4
+*.mov
+*.avi
+*.mkv
+assets/videos/
+web/videos/
+
+# outputs
+*.apk
+*.aab
